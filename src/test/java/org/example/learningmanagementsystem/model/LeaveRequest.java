@@ -26,6 +26,9 @@ public class LeaveRequest {
     public Long getId() { return id; }
     public Long getEmployeeId() { return employeeId; }
     public String getStatus() { return status; }
+    public String getLeaveType() { return leaveType;}
+    public LocalDate getStartDate() { return startDate;}
+    public LocalDate getEndDate() { return endDate;}
     public void setStatus(String status) { this.status = status; }
     public int getDaysRequested() { return daysRequested; }
 }
