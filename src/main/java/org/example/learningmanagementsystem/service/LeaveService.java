@@ -18,6 +18,11 @@ public class LeaveService {
     }
 
     public LeaveRequest submitLeave(LeaveRequest request) throws IllegalArgumentException {
+        // --- BUG FIX: Prevent zero or negative days ---
+        if (request.getDaysRequested() <= 0) {
+            throw new IllegalArgumentException("Days requested must be greater than zero.");
+        }
+        // ----------------------------------------------
         // Secure Practice: Validation & Business Logic
         int currentBalance = leaveBalances.getOrDefault(request.getEmployeeId(), 0);
 
