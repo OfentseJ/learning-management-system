@@ -30,6 +30,20 @@ public class LeaveService {
             throw new IllegalArgumentException("Insufficient leave balance.");
         }
 
+        // --- BUG FIX: Check for overlapping dates ---
+        boolean hasOverlap = leaveRequests.stream()
+                .filter(r -> r.getEmployeeId().equals(request.getEmployeeId()))
+                .filter(r -> r.getStatus().equals("Approved") || r.getStatus().equals("Pending"))
+                .anyMatch(r ->
+                        (request.getStartDate().isBefore(r.getEndDate().plusDays(1)) &&
+                                request.getEndDate().isAfter(r.getStartDate().minusDays(1)))
+                );
+
+        if (hasOverlap) {
+            throw new IllegalArgumentException("Requested dates overlap with an existing leave application.");
+        }
+        // --------------------------------------------
+
         LeaveRequest newRequest = new LeaveRequest(
                 nextRequestId++,
                 request.getEmployeeId(),
