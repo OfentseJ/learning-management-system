@@ -47,4 +47,18 @@ public class LeaveController {
             return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));
         }
     }
+
+    // TASK 2: New Feature Endpoint
+    @DeleteMapping("/cancel/{id}")
+    public ResponseEntity<?> cancelLeaveRequest(@PathVariable Long id, @RequestParam Long employeeId) {
+        try {
+            boolean isCanceled = leaveService.cancelLeave(id, employeeId);
+            return ResponseEntity.ok(Map.of(
+                    "status", "success",
+                    "message", "Leave request canceled successfully."
+            ));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));
+        }
+    }
 }
