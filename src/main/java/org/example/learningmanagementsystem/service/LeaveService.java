@@ -85,4 +85,27 @@ public class LeaveService {
 
         return request;
     }
+
+    public boolean cancelLeave(Long requestId, Long employeeId) {
+        // 1. Find the request matching BOTH the request ID and the employee ID
+        Optional<LeaveRequest> optionalReq = leaveRequests.stream()
+                .filter(r -> r.getId().equals(requestId) && r.getEmployeeId().equals(employeeId))
+                .findFirst();
+
+        // 2. If it doesn't exist (or belongs to someone else), throw an error
+        if (optionalReq.isEmpty()) {
+            throw new NoSuchElementException("Leave request not found or does not belong to this employee.");
+        }
+
+        LeaveRequest request = optionalReq.get();
+
+        // 3. Enforce Business Rule: Only 'Pending' requests can be canceled
+        if (!request.getStatus().equalsIgnoreCase("Pending")) {
+            throw new IllegalStateException("Only 'Pending' requests can be canceled.");
+        }
+
+        leaveRequests.remove(request);
+
+        return true;
+    }
 }
